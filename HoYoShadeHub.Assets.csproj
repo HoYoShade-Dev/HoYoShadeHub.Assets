@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <PackageId>HoYoShadeHub.Assets</PackageId>
+    <Version>1.0.1</Version>
+    <Authors>DuolaD</Authors>
+    <Company>HoYoShade Hub Team</Company>
+    <Product>HoYoShadeHub.Assets</Product>
+    <Description>HoYoShade Hub Assets package.</Description>
+    <PackageProjectUrl>https://github.com/DuolaD/HoYoShade-Hub</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DuolaD/HoYoShade-Hub</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>HoYoShadeHub;Assets;Resources;UI;Logo;Font</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>
+		v1.0.1 - Fixed messy code and error information issues.
+	</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Include MSBuild targets file -->
+    <None Include="build\HoYoShadeHub.Assets.targets" Pack="true" PackagePath="build\" />
+    
+    <!-- Include all assets -->
+    <None Include="build\Assets\**\*" Pack="true" PackagePath="build\Assets\" />
+    
+    <!-- Include README -->
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>HoYoShadeHub.Assets</id>
+    <version>1.0.1</version>
+    <authors>DuolaD</authors>
+    <owners>DuolaD</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/HoYoShade-Dev/HoYoShadeHub.Assets</projectUrl>
+    <description>HoYoShade Hub asset package containing the application-required logo, fonts, and other UI resources.</description>
+    <summary>HoYoShade Hub Assets Package - Logo, Fonts and UI Resources</summary>
+    <releaseNotes>v1.0.1 - Fixed package metadata encoding. Custom logo included. MiSans VF font included. Default UI icons and background resources.</releaseNotes>
+    <tags>HoYoShadeHub Assets Resources UI Logo Font MiSans WinUI</tags>
+    <repository type="git" url="https://github.com/HoYoShade-Dev/HoYoShadeHub.Assets" />
+    <readme>README.md</readme>
+  </metadata>
+  <files>
+    <file src="README.md" target="" />
+    <file src="build\HoYoShadeHub.Assets.targets" target="build\HoYoShadeHub.Assets.targets" />
+    <file src="build\Assets\**\*" target="build\Assets" />
+  </files>
+</package>
