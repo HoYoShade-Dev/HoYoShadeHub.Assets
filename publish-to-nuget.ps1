@@ -7,7 +7,7 @@ Write-Host ""
 
 # 参数配置
 $packageName = "HoYoShadeHub.Assets"
-$packageVersion = "1.0.1"
+$packageVersion = "1.01.0"
 $nugetSource = "https://api.nuget.org/v3/index.json"
 
 # 检查 API Key
