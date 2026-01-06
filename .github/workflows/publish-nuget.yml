@@ -1,0 +1,77 @@
+name: Publish to NuGet
+
+on:
+  release:
+    types: [published, edited]
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      
+      - name: Extract version from tag
+        id: extract_version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.event.release.tag_name }}"
+          # Remove 'v' prefix if exists (e.g., v1.0.1 -> 1.0.1)
+          $version = $tag -replace '^v', ''
+          Write-Host "Version: $version"
+          "version=$version" >> $env:GITHUB_OUTPUT
+      
+      - name: Update version in csproj
+        shell: pwsh
+        run: |
+          $version = "${{ steps.extract_version.outputs.version }}"
+          $csprojPath = "HoYoShadeHub.Assets.csproj"
+          
+          # Read the csproj file
+          [xml]$xml = Get-Content $csprojPath
+          
+          # Update version
+          $versionNode = $xml.Project.PropertyGroup.Version
+          if ($versionNode) {
+            $xml.Project.PropertyGroup.Version = $version
+            Write-Host "Updated version to: $version"
+          }
+          
+          # Update release notes with GitHub release body
+          $releaseNotes = "${{ github.event.release.body }}"
+          # Escape for XML
+          $releaseNotes = $releaseNotes -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' -replace '"', '&quot;' -replace "'", '&apos;'
+          
+          $releaseNotesNode = $xml.Project.PropertyGroup.PackageReleaseNotes
+          if ($releaseNotesNode) {
+            $xml.Project.PropertyGroup.PackageReleaseNotes = $releaseNotes
+            Write-Host "Updated release notes"
+          }
+          
+          # Save the updated csproj
+          $xml.Save($csprojPath)
+      
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      - name: Build package
+        run: dotnet pack --configuration Release --output ./nupkg
+      
+      - name: Publish to NuGet
+        run: dotnet nuget push ./nupkg/HoYoShadeHub.Assets.${{ steps.extract_version.outputs.version }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      
+      - name: Create GitHub Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./nupkg/HoYoShadeHub.Assets.${{ steps.extract_version.outputs.version }}.nupkg
+          asset_name: HoYoShadeHub.Assets.${{ steps.extract_version.outputs.version }}.nupkg
+          asset_content_type: application/octet-stream
