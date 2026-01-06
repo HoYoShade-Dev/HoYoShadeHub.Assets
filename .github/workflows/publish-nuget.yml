@@ -4,6 +4,10 @@ on:
   release:
     types: [published, edited]
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   publish:
     runs-on: windows-latest
@@ -66,12 +70,7 @@ jobs:
       - name: Publish to NuGet
         run: dotnet nuget push ./nupkg/HoYoShadeHub.Assets.${{ steps.extract_version.outputs.version }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
       
-      - name: Create GitHub Release Assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./nupkg/HoYoShadeHub.Assets.${{ steps.extract_version.outputs.version }}.nupkg
-          asset_name: HoYoShadeHub.Assets.${{ steps.extract_version.outputs.version }}.nupkg
-          asset_content_type: application/octet-stream
+      - name: Upload package to GitHub Release
+        run: gh release upload ${{ github.event.release.tag_name }} ./nupkg/HoYoShadeHub.Assets.${{ steps.extract_version. outputs.version }}.nupkg --clobber
+        env: 
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
